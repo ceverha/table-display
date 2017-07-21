@@ -1,0 +1,56 @@
+<html>
+    <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script src="https://sdk.amazonaws.com/js/aws-sdk-2.88.0.min.js"></script>
+	<!-- My code -->
+	<script src="./index.js"></script>
+	<link rel="stylesheet" type="text/css" href="main.css"/>
+    </head>
+    <body>
+	<div class="container-fluid">
+	    <div class="row">
+		<div class="col-sm-4 col-sm-offset-4">
+		    <div id="pageTitle" class="h2">
+			Table Display
+		    </div>
+		</div>
+	    </div>
+	    <div class="row well">
+		<div class="col-sm-4">
+		    <input id="tableName" placeholder="eg. my_table"></input>
+		</div>
+		<div class="col-sm-4">
+		    <input id="awsKey" placeholder="enter key"></input>
+		</div>
+		<div class="col-sm-4">
+		    <input id="awsSecretKey" placeholder="enter secret key" type="password"></input>
+		</div>
+	    </div>
+	    <div class="row well">
+		<div class="col-sm-4">
+		    <input id="primaryKey" placeholder="enter primary key"></input>
+		</div>
+		<div class="col-sm-8">
+		    <div>
+			Press enter to submit configuration information
+		    </div>
+		</div>
+	    </div>
+	    <div class="row">
+		<div class="col-sm-12">
+		    <table class="table table-hover" id="dataTable">
+			<thead id="tableHeading">
+			    <!-- To be filled programmatically -->
+			</thead>
+			<tbody id="tableBody">
+			    <!-- To be filled programmatically -->
+			</tbody>
+		    </table>
+		</div>
+	    </div>
+	</div>
+    </body>
+</html>
