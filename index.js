@@ -1,107 +1,51 @@
 $(document).ready(() => {
-    $('#tableName').change( function(){
-	checkParams();
-    });
-    $('#awsKey').change( function(){
-	checkParams();
-    });
-    $('#awsSecretKey').change( function(){
-	checkParams();
-    });
-    $('#primaryKey').change( function(){
-	checkParams();
+    $('#xApiKey').change( function(){
+	console.log(checkParams());
     });
 });
 
-const tableNameRegex = /[\w_\-\.]{3,255}/;
-const awsKeyRegex = /[A-Z0-9]{20}/;
-const awsSecretKeyRegex = /\w{40}/;
-
+const xApiKeyRegex = /\w{40}/;
 function checkParams() {
-    const tableName = $('#tableName').val();
-    const awsKey = $('#awsKey').val();
-    const awsSecretKey = $('#awsSecretKey').val();
-    const primaryKey = $('#primaryKey').val();
-    if (!tableNameRegex.test(tableName)) {
-	console.log('Invalid table name');
+    const xApiKey = $('#xApiKey').val();
+    if (!xApiKeyRegex.test(xApiKey)) {
+	console.log('Invalid api key');
 	return false;
     }
-    if (!awsKeyRegex.test(awsKey)) {
-	console.log('Invalid access key');
-	return false;
-    }
-    if (!awsSecretKeyRegex.test(awsSecretKey)) {
-	console.log('Invalid secret key');
-	return false;
-    }
-    // we're all good, try to build a config account
-    try {
-	var creds = new AWS.Credentials(awsKey, awsSecretKey, null);
-    } catch(err) {
-	console.log(err);
-	return false;
-    }
-    console.log(creds);
-    return updateTable(creds, tableName, primaryKey);
+    const endpoint = 'https://p2fub7qrhh.execute-api.us-east-1.amazonaws.com/Prod/getallbeacons';
+    $.ajax({
+	url: endpoint,
+	type: 'GET',
+	beforeSend: (xhr) => {xhr.setRequestHeader('x-api-key', xApiKey);},
+	success: (response) => {
+	    if (!response.ErrorMessage) {
+		updateTable(response);
+	    } else {
+		console.log(response);
+	    }
+	}
+    });
+    
+    return true;
 }
 
-function updateTable(creds, tableName, primaryKey) {
-    AWS.config.update({
-	region: 'us-east-1',
-	sslEnabled: false,
-	credentials: creds
-	// logger: process.stdout
-    });
+function updateTable(data) {
     $('#tableHeading').html('');
     $('#tableBody').html('');
-    $('#pageTitle').html(tableName);
     
-    var DB = new AWS.DynamoDB();
-
-    if (primaryKey !== '') {
-	// display the one value with this primary key
-	const params = {
-	    TableName: tableName,
-	    Key: {
-		'Food': {
-		    'S': primaryKey
-		}
-	    }
-	};
-	return DB.getItem(params).promise()
-	    .then((response) => {
-		let headingString = '<tr>';
-		let appendString = '<tr>';
-		for (let key in response.Item) {
-		    headingString += '<th>' + key + '</th>';
-		    appendString += '<td>' + response.Item[key].S  + '</td>';
-		}
-		headingString += '</tr>';
-		appendString += '</tr>';
-		$('#tableHeading').append(headingString);
-		$('#tableBody').append(appendString);
-	    });
-    } else {
-	// display the entire table
-	const params = {
-	    TableName: tableName
-	};
-	return DB.scan(params).promise()
-	    .then((response) => {
-		let appendString = '';
-		let headingString = '';
-		response.Items.forEach((item) => {
-		    headingString = '<tr>';
-		    appendString += '<tr>';
-		    for (let key in item) {
-			headingString += '<th>' + key + '</th>';
-			appendString += '<td>' + item[key].S  + '</td>';
-		    }
-		    headingString += '</tr>';
-		    appendString += '</tr>';
-		});
-		$('#tableHeading').append(headingString);
-		$('#tableBody').append(appendString);
-	    });
-    }
+    let headingString = '';
+    let appendString = '';
+    data.forEach((beacon) => {
+	headingString = '<tr>';
+	appendString += '<tr>';
+	for (let key in beacon) {
+	    headingString += '<th>' + key + '</th>';
+	    appendString += '<td>' + beacon[key]  + '</td>';
+	}
+	headingString += '</tr>';
+	appendString += '</tr>';
+    });
+    
+    
+    $('#tableHeading').append(headingString);
+    $('#tableBody').append(appendString);
 }
