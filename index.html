@@ -20,21 +20,39 @@
 	    </div>
 	    <div class="row well">
 		<div class="col-sm-4">
-		    <input id="xApiKey" placeholder="enter api key"></input>
+		    <input class="pull-right" id="xApiKey" placeholder="enter api key"></input>
 		</div>
-		<div class="col-sm-8">
+		<div class="col-sm-2">
 		    <div>
-			Press enter to submit configuration information
+			<button class="btn btn-primary pull-left" id="uuidButton">Request</button>
 		    </div>
+		</div>
+		<div class="col-sm-2">
+		    <div>
+			<button class="btn btn-primary pull-right" id="locationButton">Request</button>
+		    </div>
+		</div>
+		<div class="col-sm-4">
+		    <input class="pull-left" id="uuid" placeholder="enter uuid (display type)"></input>
 		</div>
 	    </div>
 	    <div class="row">
-		<div class="col-sm-12">
-		    <table class="table table-hover" id="dataTable">
-			<thead id="tableHeading">
+		<div class="col-sm-6">
+		    <table class="table table-hover table-condensed table-bordered" id="uuidTable">
+			<thead id="uuidHeading">
 			    <!-- To be filled programmatically -->
 			</thead>
-			<tbody id="tableBody">
+			<tbody id="uuidBody">
+			    <!-- To be filled programmatically -->
+			</tbody>
+		    </table>
+		</div>
+		<div class="col-sm-6">
+		    <table class="table table-hover table-condensed table-bordered" id="locationTable">
+			<thead id="locationHeading">
+			    <!-- To be filled programmatically -->
+			</thead>
+			<tbody id="locationBody">
 			    <!-- To be filled programmatically -->
 			</tbody>
 		    </table>

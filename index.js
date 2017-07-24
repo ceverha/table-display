@@ -1,11 +1,14 @@
 $(document).ready(() => {
-    $('#xApiKey').change( function(){
-	console.log(checkParams());
+    $('#uuidButton').click(() => {
+	console.log(checkUuidParams());
+    });
+    $('#locationButton').click(() => {
+	console.log(checkLocationParams());
     });
 });
 
 const xApiKeyRegex = /\w{40}/;
-function checkParams() {
+function checkUuidParams() {
     const xApiKey = $('#xApiKey').val();
     if (!xApiKeyRegex.test(xApiKey)) {
 	console.log('Invalid api key');
@@ -17,8 +20,8 @@ function checkParams() {
 	type: 'GET',
 	beforeSend: (xhr) => {xhr.setRequestHeader('x-api-key', xApiKey);},
 	success: (response) => {
-	    if (!response.ErrorMessage) {
-		updateTable(response);
+	    if (!response.errorMessage) {
+		updateUuidTable(response);
 	    } else {
 		console.log(response);
 	    }
@@ -27,10 +30,9 @@ function checkParams() {
     
     return true;
 }
-
-function updateTable(data) {
-    $('#tableHeading').html('');
-    $('#tableBody').html('');
+function updateUuidTable(data) {
+    $('#uuidHeading').html('');
+    $('#uuidBody').html('');
     
     let headingString = '';
     let appendString = '';
@@ -46,6 +48,48 @@ function updateTable(data) {
     });
     
     
-    $('#tableHeading').append(headingString);
-    $('#tableBody').append(appendString);
+    $('#uuidHeading').append(headingString);
+    $('#uuidBody').append(appendString);
+}
+
+const uuidRegex = /\w{8}\-\w{4}\-\w{4}\-\w{4}\-\w{12}/;
+function checkLocationParams() {
+    const xApiKey = $('#xApiKey').val();
+    if (!xApiKeyRegex.test(xApiKey)) {
+	console.log('Invalid api key');
+	return false;
+    }
+    const uuid = $('#uuid').val();
+    if (!uuidRegex.test(uuid)) {
+	console.log('Invalid uuid');
+	return false;
+    }
+    const endpoint = 'https://p2fub7qrhh.execute-api.us-east-1.amazonaws.com/Prod/getbeaconsfromuuid';
+    $.ajax({
+	url: endpoint,
+	type: 'POST',
+	data: '{UUID: uuid}',
+	dataType: 'json',
+	headers: {
+	    'x-api-key': xApiKey
+	},
+	error: (xhr, status, error) => {
+	    console.log(xhr);
+	    console.log(status);
+	    console.log(error);
+	},
+	success: (response) => {
+	    if (!response.errorMessage) {
+		updateLocationTable(response);
+	    } else {
+		console.log(response);
+	    }
+	}
+    });
+    
+    return true;
+}
+
+function updateLocationTable(data) {
+    console.log(data);
 }
